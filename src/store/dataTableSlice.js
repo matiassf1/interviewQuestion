@@ -41,7 +41,8 @@ export const dataTableSlice = createSlice({
         },
         deleteRowBySn: ( state, { payload } ) => {
             state.tableRows = state.tableRows.filter( row => row.sn !== payload );
-            state.active = null
+            state.active = null;
+            state.isSaving = false;
         }
     } ,
 });
