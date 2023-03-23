@@ -10,11 +10,11 @@ const initialValue = {
 };
 
 const fromValidations = {
-  account: [() => /^\d{6}$/.test(value), "Invalid account"],
-  no_division: [() => /^\d{2}$/.test(value), "Invalid number of division"],
-  country: [() => /^[A-Z]{2}$/, "Invalid country code"],
-  legacy: [() => /^\d{2}$/, "Invalid legacy"],
-  no_legacy_division: [() => /^\d{3}$/, "Invalid number of legacy division"],
+  account: [(value) => /^\d{6}$/.test(value), "Invalid account"],
+  no_division: [(value) => /^\d{2}$/.test(value), "Invalid number of division"],
+  country: [(value) => /^[A-Z]{2}$/.test(value), "Invalid country code"],
+  legacy: [(value) => /^\d{2}$/.test(value), "Invalid legacy"],
+  no_legacy_division: [(value) => /^\d{3}$/.test(value), "Invalid number of legacy division"],
 };
 
 export const DataTableForm = () => {
