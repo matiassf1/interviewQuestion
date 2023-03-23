@@ -15,7 +15,7 @@ export const dataTableSlice = createSlice({
         //     no_division: 22, // 2 numbers
         //     country: 'US', // only valids countries
         //     legacy: 11, // 2 numbers
-        //     no_legacy: 456 //3 numbers
+        //     no_legacy_division: 456 //3 numbers
         // }
     } ,
     reducers:  {
