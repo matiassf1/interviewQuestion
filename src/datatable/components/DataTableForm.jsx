@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "../../hooks/useForm";
+import { addRow, setIsSaving } from "../../store/dataTableSlice";
+
+import { ErrorMessage } from "../../ui/ErrorMessage";
+import { LabelForm } from "../../ui/LabelForm";
 
 const initialValue = {
   account: "", // 6 numbers
@@ -9,15 +14,23 @@ const initialValue = {
   no_legacy_division: "", //3 numbers
 };
 
-const fromValidations = {
+const formValidations = {
   account: [(value) => /^\d{6}$/.test(value), "Invalid account"],
   no_division: [(value) => /^\d{2}$/.test(value), "Invalid number of division"],
   country: [(value) => /^[A-Z]{2}$/.test(value), "Invalid country code"],
   legacy: [(value) => /^\d{2}$/.test(value), "Invalid legacy"],
-  no_legacy_division: [(value) => /^\d{3}$/.test(value), "Invalid number of legacy division"],
+  no_legacy_division: [
+    (value) => /^\d{3}$/.test(value),
+    "Invalid number of legacy division",
+  ],
 };
 
 export const DataTableForm = () => {
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const { isSaving, active, tableRows } = useSelector((state) => state.table)
+  const dispatch = useDispatch()
+
   const {
     account,
     no_division,
@@ -30,75 +43,108 @@ export const DataTableForm = () => {
     countryValid,
     legacyValid,
     no_legacy_divisionValid,
-  } = useForm(initialValue, fromValidations);
+    isFormValid,
+    formState,
+    onResetForm
+  } = useForm(initialValue, formValidations);
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log("Submit");
+    setFormSubmitted(true);
+    dispatch(setIsSaving())
+
+    if(!isFormValid) return
+    let nextSn = tableRows.length
+    while (nextSn == tableRows[tableRows.length - 1]?.sn) {
+      nextSn++
+    }
+    dispatch( addRow( {...formState, sn:nextSn} ) )
+    setFormSubmitted(false);
+    onResetForm();
   };
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gridTemplateColumns: "50% 50%", justifyItems:'center', gap: 5}}>
-      <div style={{ display:'flex', flexDirection:'column' }}>
-        <label> Account </label>
+    <form
+      onSubmit={onSubmit}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "50% 50%",
+        justifyItems: "center",
+        gap: 5,
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <LabelForm> Account </LabelForm>
         <input
           type="text"
           value={account}
           name="account"
           onChange={onInputChange}
-          error={!!accountValid}
-          helperText={!!accountValid ? accountValid : ''}
+          error={!!accountValid && formSubmitted ? "true" : "false"}
           placeholder="Account"
         />
+        {!!accountValid && formSubmitted ? (<ErrorMessage>{accountValid}</ErrorMessage>) : ''}
       </div>
-      <div style={{ display:'flex', flexDirection:'column' }}>
-        <label> No Division </label>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <LabelForm> No Division </LabelForm>
         <input
           type="text"
           value={no_division}
           name="no_division"
           onChange={onInputChange}
-          error={!!no_divisionValid}
-          helperText={!!no_divisionValid ? no_divisionValid : ''}
+          error={!!no_divisionValid && formSubmitted ? "true" : "false"}
           placeholder="No Division"
         />
+        {!!no_divisionValid && formSubmitted ? (
+          <ErrorMessage>{no_divisionValid}</ErrorMessage>
+        ) : (
+          ""
+        )}
       </div>
-      <div style={{ display:'flex', flexDirection:'column' }}>
-        <label> Country </label>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <LabelForm> Country </LabelForm>
         <input
           type="text"
           value={country}
           name="country"
           onChange={onInputChange}
-          error={!!countryValid}
-          helperText={!!countryValid ? countryValid : ''}
+          error={!!countryValid && formSubmitted ? "true" : "false"}
           placeholder="Country"
         />
+        {!!countryValid && formSubmitted ? <ErrorMessage>{countryValid}</ErrorMessage> : ""}
       </div>
-      <div style={{ display:'flex', flexDirection:'column' }}>
-        <label> Legacy </label>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <LabelForm> Legacy </LabelForm>
         <input
           type="text"
           value={legacy}
           name="legacy"
           onChange={onInputChange}
-          error={!!legacyValid}
-          helperText={!!legacyValid ? legacyValid : ''}
+          error={!!legacyValid && formSubmitted ? "true" : "false"}
           placeholder="Legacy"
         />
+        {!!legacyValid && formSubmitted ? <ErrorMessage>{legacyValid}</ErrorMessage> : ""}
       </div>
-      <div style={{ display:'flex', flexDirection:'column',  gridColumn: '1/3'  }}>
-        <label> No Legacy Division </label>
+      <div
+        style={{ display: "flex", flexDirection: "column", gridColumn: "1/3" }}
+      >
+        <LabelForm> No Legacy Division </LabelForm>
         <input
           type="text"
           value={no_legacy_division}
-          name="no_legacyDivision"
+          name="no_legacy_division"
           onChange={onInputChange}
-          error={!!no_legacy_divisionValid}
-          helperText={!!no_legacy_divisionValid ? no_legacy_divisionValid : ''}
+          error={!!no_legacy_divisionValid && formSubmitted ? "true" : "false"}
           placeholder="No DivisionLegacy"
         />
+        {!!no_legacy_divisionValid && formSubmitted ? (
+          <ErrorMessage>{no_legacy_divisionValid}</ErrorMessage>
+        ) : (
+          ""
+        )}
       </div>
+
+      <button type="submit" style={{ fontWeight:'bold', color:'#F0F2F2',placeSelf:'center', gridColumn:'2', borderRadius:'10px', backgroundColor:"#285911", opacity:0.9, border:'none', padding:'5px', paddingLeft:'calc(20% - 20px)', paddingRight:'calc(20% - 20px)' }}>Save</button>
     </form>
   );
 };

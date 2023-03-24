@@ -19,7 +19,6 @@ export const dataTableSlice = createSlice({
         // }
     } ,
     reducers:  {
-
         setIsSaving: (state) => {
             state.isSaving = true;
         },
@@ -49,4 +48,4 @@ export const dataTableSlice = createSlice({
 
 
 
-export const {} = dataTableSlice.actions;
+export const {setIsSaving, editRow, addRow, deleteRowBySn} = dataTableSlice.actions;

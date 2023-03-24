@@ -1,6 +1,14 @@
-import React from "react";
+import React, {  } from "react";
 
 export const Table = () => {
+
+
+  const activeRow = (event) => {
+    event.preventDefault();
+    console.log(event.target);
+  }
+
+
   return (
     <table
       style={{
@@ -39,6 +47,7 @@ export const Table = () => {
 
       <tbody>
         <tr
+          onClick={activeRow}
           style={{
             borderSpacing: "2px",
           }}
@@ -52,7 +61,9 @@ export const Table = () => {
           <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
           <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
         </tr>
-        <tr>
+        <tr
+          onClick={activeRow}
+          >
           <th style={{ borderBottom: "1px solid #dee2e6" }} scope="row">
             2
           </th>
