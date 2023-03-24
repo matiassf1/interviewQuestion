@@ -1,13 +1,18 @@
-import React, {  } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setActive } from "../../store/dataTableSlice";
 
-export const Table = () => {
+export const Table = ({ onEditRow }) => {
+  const { tableRows } = useSelector((state) => state.table);
+  const dispatch = useDispatch();
 
-
-  const activeRow = (event) => {
+  const onActiveRow = (event) => {
     event.preventDefault();
-    console.log(event.target);
-  }
 
+    let snActive = event.target.accessKey;
+    onEditRow();
+    dispatch(setActive(tableRows[snActive]));
+  };
 
   return (
     <table
@@ -45,23 +50,48 @@ export const Table = () => {
         </tr>
       </thead>
 
-      <tbody>
-        <tr
-          onClick={activeRow}
-          style={{
-            borderSpacing: "2px",
-          }}
-        >
-          <th style={{ borderBottom: "1px solid #dee2e6" }} scope="row">
-            1
-          </th>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-        </tr>
-        <tr
+      <tbody onClick={onActiveRow}>
+        {tableRows.map(
+          ({
+            sn,
+            account,
+            no_division,
+            country,
+            legacy,
+            no_legacy_division,
+          }) => (
+            <tr
+              key={sn}
+              style={{
+                borderSpacing: "2px",
+              }}
+            >
+              <th
+                accessKey={sn}
+                style={{ borderBottom: "1px solid #dee2e6" }}
+                scope="row"
+              >
+                {sn}
+              </th>
+              <td accessKey={sn} style={{ borderBottom: "1px solid #dee2e6" }}>
+                {account}
+              </td>
+              <td accessKey={sn} style={{ borderBottom: "1px solid #dee2e6" }}>
+                {no_division}
+              </td>
+              <td accessKey={sn} style={{ borderBottom: "1px solid #dee2e6" }}>
+                {country}
+              </td>
+              <td accessKey={sn} style={{ borderBottom: "1px solid #dee2e6" }}>
+                {legacy}
+              </td>
+              <td accessKey={sn} style={{ borderBottom: "1px solid #dee2e6" }}>
+                {no_legacy_division}
+              </td>
+            </tr>
+          )
+        )}
+        {/* <tr
           onClick={activeRow}
           >
           <th style={{ borderBottom: "1px solid #dee2e6" }} scope="row">
@@ -72,7 +102,7 @@ export const Table = () => {
           <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
           <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
           <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-        </tr>
+        </tr> */}
       </tbody>
     </table>
   );

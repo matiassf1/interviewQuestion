@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "../../hooks/useForm";
-import { addRow, setIsSaving } from "../../store/dataTableSlice";
+import { addRow, editRow, setIsSaving } from "../../store/dataTableSlice";
 
 import { ErrorMessage } from "../../ui/ErrorMessage";
 import { LabelForm } from "../../ui/LabelForm";
@@ -25,11 +25,11 @@ const formValidations = {
   ],
 };
 
-export const DataTableForm = () => {
+export const DataTableForm = ({ isEditingRow }) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const { isSaving, active, tableRows } = useSelector((state) => state.table)
-  const dispatch = useDispatch()
+  const { isSaving, active, tableRows } = useSelector((state) => state.table);
+  const dispatch = useDispatch();
 
   const {
     account,
@@ -45,20 +45,27 @@ export const DataTableForm = () => {
     no_legacy_divisionValid,
     isFormValid,
     formState,
-    onResetForm
+    onResetForm,
   } = useForm(initialValue, formValidations);
 
   const onSubmit = (event) => {
     event.preventDefault();
     setFormSubmitted(true);
-    dispatch(setIsSaving())
 
-    if(!isFormValid) return
-    let nextSn = tableRows.length
-    while (nextSn == tableRows[tableRows.length - 1]?.sn) {
-      nextSn++
+    if (!isFormValid) return new Error("Algo salio mal");
+
+    dispatch(setIsSaving());
+
+    if (!isEditingRow) {
+      let nextSn = tableRows.length;
+      while (nextSn == tableRows[tableRows.length - 1]?.sn) {
+        nextSn++;
+      }
+      dispatch(addRow({ ...formState, sn: nextSn }));
+    } else {
+      console.log('entre');
+      dispatch(editRow(formState));
     }
-    dispatch( addRow( {...formState, sn:nextSn} ) )
     setFormSubmitted(false);
     onResetForm();
   };
@@ -83,7 +90,11 @@ export const DataTableForm = () => {
           error={!!accountValid && formSubmitted ? "true" : "false"}
           placeholder="Account"
         />
-        {!!accountValid && formSubmitted ? (<ErrorMessage>{accountValid}</ErrorMessage>) : ''}
+        {!!accountValid && formSubmitted ? (
+          <ErrorMessage>{accountValid}</ErrorMessage>
+        ) : (
+          ""
+        )}
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <LabelForm> No Division </LabelForm>
@@ -111,7 +122,11 @@ export const DataTableForm = () => {
           error={!!countryValid && formSubmitted ? "true" : "false"}
           placeholder="Country"
         />
-        {!!countryValid && formSubmitted ? <ErrorMessage>{countryValid}</ErrorMessage> : ""}
+        {!!countryValid && formSubmitted ? (
+          <ErrorMessage>{countryValid}</ErrorMessage>
+        ) : (
+          ""
+        )}
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <LabelForm> Legacy </LabelForm>
@@ -123,7 +138,11 @@ export const DataTableForm = () => {
           error={!!legacyValid && formSubmitted ? "true" : "false"}
           placeholder="Legacy"
         />
-        {!!legacyValid && formSubmitted ? <ErrorMessage>{legacyValid}</ErrorMessage> : ""}
+        {!!legacyValid && formSubmitted ? (
+          <ErrorMessage>{legacyValid}</ErrorMessage>
+        ) : (
+          ""
+        )}
       </div>
       <div
         style={{ display: "flex", flexDirection: "column", gridColumn: "1/3" }}
@@ -144,7 +163,24 @@ export const DataTableForm = () => {
         )}
       </div>
 
-      <button type="submit" style={{ fontWeight:'bold', color:'#F0F2F2',placeSelf:'center', gridColumn:'2', borderRadius:'10px', backgroundColor:"#285911", opacity:0.9, border:'none', padding:'5px', paddingLeft:'calc(20% - 20px)', paddingRight:'calc(20% - 20px)' }}>Save</button>
+      <button
+        type="submit"
+        style={{
+          fontWeight: "bold",
+          color: "#F0F2F2",
+          placeSelf: "center",
+          gridColumn: "2",
+          borderRadius: "10px",
+          backgroundColor: "#285911",
+          opacity: 0.9,
+          border: "none",
+          padding: "5px",
+          paddingLeft: "calc(20% - 20px)",
+          paddingRight: "calc(20% - 20px)",
+        }}
+      >
+        Save
+      </button>
     </form>
   );
 };

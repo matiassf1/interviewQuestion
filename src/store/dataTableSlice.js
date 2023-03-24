@@ -17,35 +17,46 @@ export const dataTableSlice = createSlice({
         //     legacy: 11, // 2 numbers
         //     no_legacy_division: 456 //3 numbers
         // }
-    } ,
-    reducers:  {
+    },
+    reducers: {
         setIsSaving: (state) => {
             state.isSaving = true;
         },
+        setActive: (state, { payload }) => {
+            state.active = payload;
+            state.deleteMessage = '';
+        },
         editRow: (state, { payload }) => {
             state.active = {
-                ...active,
+                ...state.active,
                 ...payload
             }
             state.tableRows = state.tableRows.map((row) => {
-                if( active.sn !== row.sn ) return row
+                if (state.active.sn !== row.sn) return row
 
-                return payload;
+                return {...state.active, ...payload};
             })
             state.isSaving = false;
+            state.messageSaved = 'Row saved succesfully';
+            state.deleteMessage = '';
         },
-        addRow: ( state, { payload } ) => {
+        addRow: (state, { payload }) => {
             state.tableRows = [...state.tableRows, payload]
             state.isSaving = false;
+            state.messageSaved = 'Row saved succesfully';
+            state.deleteMessage = '';
         },
-        deleteRowBySn: ( state, { payload } ) => {
-            state.tableRows = state.tableRows.filter( row => row.sn !== payload );
+        deleteRowBySn: (state, { payload }) => {
+            state.tableRows = state.tableRows.filter(row => row.sn !== payload);
             state.active = null;
             state.isSaving = false;
+            state.messageSaved = '';
+            state.deleteMessage = 'Row deleted succesfully';
+
         }
-    } ,
+    },
 });
 
 
 
-export const {setIsSaving, editRow, addRow, deleteRowBySn} = dataTableSlice.actions;
+export const { setIsSaving, editRow, addRow, deleteRowBySn, setActive} = dataTableSlice.actions;
