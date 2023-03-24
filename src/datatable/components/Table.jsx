@@ -14,8 +14,15 @@ export const Table = ({ onEditRow }) => {
     dispatch(setActive(tableRows[snActive]));
   };
 
+  if (tableRows.length == 0) return (
+    <span>
+      You don't have any row, please add one to show the table
+    </span>
+  ) 
+
   return (
-    <table
+    <>
+          <table
       style={{
         marginBottom: "1rem",
         verticalAlign: "top",
@@ -91,19 +98,12 @@ export const Table = ({ onEditRow }) => {
             </tr>
           )
         )}
-        {/* <tr
-          onClick={activeRow}
-          >
-          <th style={{ borderBottom: "1px solid #dee2e6" }} scope="row">
-            2
-          </th>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-          <td style={{ borderBottom: "1px solid #dee2e6" }}>toFill</td>
-        </tr> */}
       </tbody>
     </table>
+
+    <h4>
+      To edit a Row just click them and fill the form! :D
+    </h4>
+    </>
   );
 };

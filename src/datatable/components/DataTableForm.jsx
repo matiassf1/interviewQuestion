@@ -25,7 +25,7 @@ const formValidations = {
   ],
 };
 
-export const DataTableForm = ({ isEditingRow }) => {
+export const DataTableForm = ({ isEditingRow, editRowDone }) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const { isSaving, active, tableRows } = useSelector((state) => state.table);
@@ -63,10 +63,10 @@ export const DataTableForm = ({ isEditingRow }) => {
       }
       dispatch(addRow({ ...formState, sn: nextSn }));
     } else {
-      console.log('entre');
       dispatch(editRow(formState));
     }
     setFormSubmitted(false);
+    editRowDone();
     onResetForm();
   };
 
@@ -78,6 +78,7 @@ export const DataTableForm = ({ isEditingRow }) => {
         gridTemplateColumns: "50% 50%",
         justifyItems: "center",
         gap: 5,
+        marginTop:'15px'
       }}
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -178,6 +179,7 @@ export const DataTableForm = ({ isEditingRow }) => {
           paddingLeft: "calc(20% - 20px)",
           paddingRight: "calc(20% - 20px)",
         }}
+        disabled={isSaving}
       >
         Save
       </button>

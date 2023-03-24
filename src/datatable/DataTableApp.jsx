@@ -12,12 +12,16 @@ export const DataTableApp = () => {
     setIsEditingRow(true);
   }
 
+  const editRowDone = () => {
+    setIsEditingRow(false)
+  }
+
   return (
     <div style={{margin:'3rem', my:'auto', mx:'auto'}}>
-      <h1>Hello guys!</h1>
+      <h1 style={{marginBottom: '10px'}}>Data Table</h1>
       <Table onEditRow={onEditRow} />
 
-      <DataTableForm  isEditingRow={isEditingRow}/>
+      <DataTableForm  isEditingRow={isEditingRow} editRowDone={editRowDone}/>
     </div>
   )
 }
