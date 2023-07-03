@@ -21,7 +21,7 @@ export const DataTableApp = () => {
       <h1 style={{marginBottom: '10px'}}>Data Table</h1>
       <Table onEditRow={onEditRow} />
 
-      <DataTableForm  isEditingRow={isEditingRow} editRowDone={editRowDone}/>
+      <DataTableForm activeRow={row} isEditingRow={isEditingRow} editRowDone={editRowDone}/>
     </div>
   )
 }

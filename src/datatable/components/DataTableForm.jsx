@@ -25,7 +25,7 @@ const formValidations = {
   ],
 };
 
-export const DataTableForm = ({ isEditingRow, editRowDone }) => {
+export const DataTableForm = ({ isEditingRow, editRowDone, activeRow }) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const { isSaving, active, tableRows } = useSelector((state) => state.table);
@@ -46,7 +46,7 @@ export const DataTableForm = ({ isEditingRow, editRowDone }) => {
     isFormValid,
     formState,
     onResetForm,
-  } = useForm(initialValue, formValidations);
+  } = useForm(activeRow || initialValue, formValidations);
 
   const onSubmit = (event) => {
     event.preventDefault();
